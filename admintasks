@@ -7,7 +7,7 @@
 echo
 echo This script will runs basic administrative tasks
 echo 
-top
+top -n 1
 echo 
 df -h
 echo 
