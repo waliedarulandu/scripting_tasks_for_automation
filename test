@@ -2,7 +2,7 @@
 # Author: Walied Arulandu
 # Date Created: 2021/12/06 10:54:00
 # Description: This script will output "This is a test message" on the screen
-# Date Modified: 2021/12/06 11:21:42
+# Date Modified: YYYY/MM/DD 00:00:00
 
 echo
 echo This is a test message 
