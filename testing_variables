@@ -1,0 +1,23 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/07 14:54:00
+# Description: This script will output "This is a test message" on the screen
+# Date Modified: YYYY/MM/DD 00:00:00
+
+
+
+# Define the variables
+p=pwd
+l=ls
+wi=whoami
+d=date
+c='cal 2018'
+
+echo
+echo Run testing_variables tasks 
+echo 
+$p
+$l
+$wi
+$d
+$c
