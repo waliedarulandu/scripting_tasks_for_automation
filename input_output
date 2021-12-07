@@ -1,0 +1,10 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/07 21:35:00
+# Description: This script will output "This is a test message" on the screen
+# Date Modified: YYYY/MM/DD 00:00:00
+
+echo Server name is $(hostname)
+echo  Enter name : 
+read name_var
+echo Hello $name_var
