@@ -1,14 +1,9 @@
 #!/bin/bash
 # Author: Walied Arulandu
 # Date Created: 2021/12/07 22:05:00
-# Description: This script will output "This is a test message" on the screen
+# Description: This script will check for the existence of a log file and output the result on the screeni.
 # Date Modified: YYYY/MM/DD 00:00:00
 
-echo
-echo This is a test message 
-echo 
-
-#clear
 # Check if file exist 
 if [ -e ~/projects/trash/error.txt ]
   then

@@ -1,0 +1,28 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/08 00:04:00
+# Description: This script will accept a choice and display the output of the selected command.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+echo
+echo Chose one of the options below:
+echo 
+echo 'a = Display date and time'
+echo 'b = List file and directories'
+echo 'c = List users logged in'
+echo 'd = Check system uptime'
+echo 
+
+read choices
+
+echo 
+
+case $choices in
+  a) date;;
+  b) ls;;
+  c) who;;
+  d) uptime;;
+  *) echo Invalid choice - Bye bye :)
+esac
+
+echo

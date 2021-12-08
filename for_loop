@@ -1,0 +1,13 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/07 11:15:00
+# Description: This script will output a test message multiple times on screen using a for loop.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+for i in a b c d # or 1 2 3 4
+do
+  echo
+  echo This is a test message 
+done
+
+echo

@@ -1,10 +1,8 @@
 #!/bin/bash
 # Author: Walied Arulandu
 # Date Created: 2021/12/07 14:54:00
-# Description: This script will output "This is a test message" on the screen
+# Description: This script will display on screen the output of command line utilities.
 # Date Modified: YYYY/MM/DD 00:00:00
-
-
 
 # Define the variables
 p=pwd

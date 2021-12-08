@@ -1,12 +1,8 @@
 #!/bin/bash
 # Author: Walied Arulandu
 # Date Created: 2021/12/07 21:51:00
-# Description: This script will output "This is a test message" on the screen
+# Description: This script will check the count and display a message on screen.
 # Date Modified: YYYY/MM/DD 00:00:00
-
-echo
-echo This is a test message 
-echo 
 
 count=100
 if [ $count -eq 100 ]
