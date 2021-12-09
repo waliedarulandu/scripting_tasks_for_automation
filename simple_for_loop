@@ -1,0 +1,10 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/08 11:59:00
+# Description: This script will display the different activies humans do.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+for i in eat run jump play
+do
+  echo Humans can $i
+done

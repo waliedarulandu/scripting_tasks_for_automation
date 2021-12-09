@@ -1,0 +1,12 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/08 21:18:00
+# Description: This script will display user logins.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+echo "Hello $(whoami)"
+echo
+echo "Today is $(date)"
+echo
+echo "Number of user logins: $(who|wc -l)"
+echo

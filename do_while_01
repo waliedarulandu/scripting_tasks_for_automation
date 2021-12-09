@@ -1,0 +1,12 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/08 13:04:51
+# Description: This script will display a "Welcome" message 5 times.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+c=1
+while [ $c -le 5 ]
+do
+  echo "Welcome $c times"
+  ((c++))
+done

@@ -1,0 +1,17 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/08 21:33:00
+# Description: This script will .
+# Date Modified: YYYY/MM/DD 00:00:00
+
+now=$(date +'%a')
+
+case $now in
+  Mon)
+    echo Full backup;;
+  Tues|Wed|Thu|Fri)
+    echo Partial backup;;
+  Sat|Sun)
+    echo No backup;;
+  *);;
+esac

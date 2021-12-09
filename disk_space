@@ -1,0 +1,19 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/08 15:30:00
+# Description: This script will check disk usage.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+LOGDIR=~/projects/trash
+
+# Check if disk usage log file exists
+
+if [ -e ${LOGDIR}/disk.log ]
+then
+  echo disk.log exist so rotating backup to disk.log.0
+  mv ${LOGDIR}/disk.log ${LOGDIR}/disk.log.0
+fi
+
+# Run the du -sk command and reverse sort order
+
+du -sk * | sort -rn > ${LOGDIR}/disk.log

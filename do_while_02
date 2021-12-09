@@ -1,0 +1,22 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/08 12:41:00
+# Description: This script will terminate after 10 seconds using a while loop.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+count=0
+num=10
+
+while [ $count -lt 10 ]
+do
+  echo
+  echo $num seconds left before this process $$ stops.
+  echo
+  sleep 1
+  num=$(expr $num - 1)
+  count=$(expr $count + 1)
+done
+
+echo
+echo The $$ process has stopped.
+echo
