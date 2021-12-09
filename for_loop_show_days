@@ -1,0 +1,12 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/09 04:32:00
+# Description: This script will list all the days of the week.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+i=1
+
+for day in Mon Tues Wed Thu Fri
+do
+  echo Weekday $((i++)): $day
+done
