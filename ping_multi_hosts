@@ -1,0 +1,19 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/10 12:37:00
+# Description: This script will .
+# Date Modified: YYYY/MM/DD 00:00:00
+
+host_list=~/projects/trash/my_hosts
+
+for ip in $(cat $host_list)
+do
+  # A count of one ping and/or one second wait in case no response received (something like a soft timeout).
+  ping -c1 -W1 $ip &> /dev/null
+  if [ $? -eq 0 ]
+    then
+      echo $ip is OK
+    else
+      echo $ip is NOT ok
+   fi
+done

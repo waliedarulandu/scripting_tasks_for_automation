@@ -1,0 +1,39 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/10 11:40:00
+# Description: This script will ping remote ip hosts.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+host1=192.168.4.1
+host2=8.8.8.8
+
+ping -c1 $host1
+
+# echo
+# Placing and echo here for readability breaks the logic, epic fail LOL
+
+if [ $? -eq 0 ]
+then
+  echo Ping Ok
+  echo Home router is up 
+else
+  echo Ping not ok
+  echo Home router is down 
+fi
+
+echo
+
+# Don't show the output
+
+ping -c1 $host2 &> /dev/null
+
+if [ $? -eq 0 ]
+then
+  echo Ping ok
+  echo Google\'s DNS server is reachable
+else
+  echo Ping not ok
+  echo Google\'s DNS server is unreachable
+fi
+
+echo
