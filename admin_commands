@@ -1,0 +1,13 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/09 11:18:00
+# Description: This script will run admin commands.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+echo
+date
+echo
+uptime
+echo
+df -h
+echo

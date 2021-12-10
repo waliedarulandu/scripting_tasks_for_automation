@@ -1,0 +1,10 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: 2021/12/09 09:25:00
+# Description: This script will extract warning messages from the system log file and write it to a file.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+SYSTEMLOG=/var/log/syslog
+ERRORLOG=~/projects/trash/system_warning_msgs.txt
+
+grep -i warn ${SYSTEMLOG}* > ${ERRORLOG} 
