@@ -4,6 +4,8 @@
 # Description: This script will get the timestamps for a given file.
 # Date Modified: YYYY/MM/DD 00:00:00
 
+file_system=/dev/sda5
+
 echo What is the file name: 
 
 read file_name
@@ -12,4 +14,4 @@ inode_id=$(ls -i $file_name | awk {'print $1'})
 
 #echo $inode_id
 
-sudo debugfs -R 'stat <'$inode_id'>' /dev/sda5
+sudo debugfs -R 'stat <'$inode_id'>' $file_system
