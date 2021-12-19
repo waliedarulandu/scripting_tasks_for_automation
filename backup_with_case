@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Walied Arulandu
 # Date Created: 2021/12/08 21:33:00
-# Description: This script will .
+# Description: This script will display a specific message based a given day.
 # Date Modified: YYYY/MM/DD 00:00:00
 
 now=$(date +'%a')

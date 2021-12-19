@@ -1,0 +1,38 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: Sun Dec 19 22:56:12 2021
+# Description: This script will create a file with a user specified create date.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+#
+file_path=~/projects/trash/
+
+echo Specify the day:
+read the_day
+
+echo Specify the date:
+read the_date
+
+echo Specify the Month:
+read the_month
+
+echo Specify day the year:
+read the_year
+
+echo Specify the hour:
+read the_hour
+
+echo Specify the minutes:
+read the_minutes
+
+echo Specify the seconds:
+read the_seconds
+
+echo Specify the file name: 
+read file_name
+
+absolute_date=$the_day', '$the_date' '$the_month' '$the_year' '$the_hour':'$the_minutes':'$the_seconds 
+
+echo The create date will be $absolute_date as specified.
+
+touch -d "$absolute_date" $file_path$file_name
