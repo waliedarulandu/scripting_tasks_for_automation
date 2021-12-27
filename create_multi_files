@@ -1,11 +1,18 @@
 #!/bin/bash
 # Author: Walied Arulandu
 # Date Created: Mon Dec 27 22:34:55 2021
-# Description: This script will create multiple files.
+# Description: This script will create multiple files specified by input.
 # Date Modified: Mon Dec 27 22:34:55 2021 
 
 #
-for i in {1..10}
+echo How many files do you want?
+read input
+
+echo
+echo Enter the prefix for the file name: 
+read prefix
+
+for i in $(seq 1 $input)
 do
-  touch ~/projects/trash/walied.$i
+  touch ~/projects/trash/$prefix.$i
 done
