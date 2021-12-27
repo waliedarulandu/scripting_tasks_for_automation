@@ -1,0 +1,12 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: Mon Dec 27 22:19:10 2021
+# Description: This script will .
+# Date Modified: Mon Dec 27 22:19:10 2021
+
+#
+for i in {1..5}
+do
+  echo $i
+  sleep 1
+done
