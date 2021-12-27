@@ -1,0 +1,24 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: Mon Dec 27 21:22:21 2021
+# Description: This script will .
+# Date Modified: Mon Dec 27 21:22:21 2021 
+
+#
+
+tar cvf ~/projects/trash/backup.tar /etc /var
+
+gzip ~/projects/trash/backup.tar
+
+find ~/ -name backup.tar.gz -mtime -1 -type f -print #&> /dev/null
+
+if [ $? -eq 0 ]
+then
+  echo 
+  echo Backup was created
+  echo
+  echo Archiving Backup
+  echo #scp ~/projects/trash/backup.tar.gz root@192.168.4.x:/path
+else
+  echo Backup Failed
+fi
