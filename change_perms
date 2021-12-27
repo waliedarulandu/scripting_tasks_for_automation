@@ -1,0 +1,18 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: Mon Dec 27 23:17:42 2021
+# Description: This script will change the permissions for multiple files.
+# Date Modified: Mon Dec 27 23:17:42 2021
+
+#
+total=$(ls -l ~/projects/trash/walied.* | wc -l)
+
+echo It will take $total seconds to assign permissions...
+echo
+
+for i in ~/projects/trash/walied.*
+do
+  echo Assigning write permissions to $i
+  chmod a+x $i
+  sleep 1
+done
