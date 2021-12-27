@@ -7,28 +7,28 @@
 #
 file_path=~/projects/trash/
 
-echo Specify the day:
+echo Specify the day '(Mon-Sun)':
 read the_day
 
-echo Specify the date:
+echo Specify the date '(1-31)':
 read the_date
 
-echo Specify the Month:
+echo Specify the Month '(e.g. March)':
 read the_month
 
-echo Specify day the year:
+echo Specify day the year '(e.g. 2018)':
 read the_year
 
-echo Specify the hour:
+echo Specify the hour '(01-23)':
 read the_hour
 
-echo Specify the minutes:
+echo Specify the minutes '(01-59)':
 read the_minutes
 
-echo Specify the seconds:
+echo Specify the seconds '(01-59)':
 read the_seconds
 
-echo Specify the file name: 
+echo Specify a name for the file: 
 read file_name
 
 absolute_date=$the_day', '$the_date' '$the_month' '$the_year' '$the_hour':'$the_minutes':'$the_seconds 
