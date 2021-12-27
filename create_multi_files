@@ -1,0 +1,11 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: Mon Dec 27 22:34:55 2021
+# Description: This script will create multiple files.
+# Date Modified: Mon Dec 27 22:34:55 2021 
+
+#
+for i in {1..10}
+do
+  touch ~/projects/trash/walied.$i
+done
