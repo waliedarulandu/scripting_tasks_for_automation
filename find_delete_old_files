@@ -1,0 +1,20 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: Mon Dec 27 20:02:36 2021 
+# Description: This script will find files older than the specified number of days.
+# Date Modified: YYYY/MM/DD 00:00:00
+
+#
+echo Find files that are older than:
+read days 
+
+find ~/projects/trash -mtime +$days -exec ls -lt {} \; 
+
+echo Do you want to delete them? '(y/n)':
+read input
+
+if [ $input == y ] 
+then
+  find ~/projects/trash -mtime +$days -exec rm -i {} \;
+fi
+
