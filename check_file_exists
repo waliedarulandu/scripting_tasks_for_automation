@@ -1,0 +1,28 @@
+#!/bin/bash
+# Script: check_file_exists 
+# Author: Walied Arulandu
+# Date Created: Sun Jan  2 09:01:53 2022 
+# Description: This script will check for the existence of files.
+# Date Modified: Sun Jan  2 09:01:53 2022 
+
+#
+
+FILES="/etc/passwd
+/etc/group
+/etc/shadow
+/etc/nsswitch.conf
+/etc/sshd_ssh_config
+/etc/fake"
+
+echo
+for file_name in $FILES
+do
+  if [ ! -e $file_name ]
+  then
+    echo $file_name does not exist!
+    echo
+  else
+    echo $file_name is found. 
+    echo 
+  fi
+done
