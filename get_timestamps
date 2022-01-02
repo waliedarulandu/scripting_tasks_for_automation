@@ -6,12 +6,10 @@
 
 file_system=/dev/sda5
 
-echo What is the file name: 
+# Passing the file name into script at the command line by using the built in $1 shell parameter makes it so much more quicker and easier.
+inode_id=$(ls -i $1 | awk {'print $1'})
 
-read file_name
-
-inode_id=$(ls -i $file_name | awk {'print $1'})
-
+# The following echo is used for debugging.
 #echo $inode_id
 
 sudo debugfs -R 'stat <'$inode_id'>' $file_system
