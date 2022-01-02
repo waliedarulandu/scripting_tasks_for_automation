@@ -7,12 +7,12 @@
 
 #
 
-FILES="/etc/passwd
+FILES='/etc/passwd
 /etc/group
 /etc/shadow
 /etc/nsswitch.conf
 /etc/sshd_ssh_config
-/etc/fake"
+/etc/fake'
 
 echo
 for file_name in $FILES
