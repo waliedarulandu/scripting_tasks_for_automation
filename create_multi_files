@@ -12,7 +12,11 @@ echo
 echo Enter the prefix for the file name: 
 read prefix
 
+echo
+echo Provide the suffix
+read suffix
+
 for i in $(seq 1 $input)
 do
-  touch ~/projects/trash/$prefix.$i
+  touch ~/projects/trash/$prefix.$i.$suffix
 done
