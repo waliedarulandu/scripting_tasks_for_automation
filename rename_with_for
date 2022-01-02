@@ -1,0 +1,17 @@
+#!/bin/bash
+# Author: Walied Arulandu
+# Date Created: Sun Jan  2 07:39:01 2022
+# Description: This script will rename files ending with a given suffix to a new suffix.
+# Date Modified: 
+
+#
+echo Provide the current suffix:
+read current_suffix
+
+echo Provide the new suffix:
+read new_suffix
+
+for file_name in ~/projects/trash/*.$current_suffix  
+do
+  mv $file_name ${file_name%.txt}.$new_suffix
+done
