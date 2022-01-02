@@ -1,0 +1,26 @@
+#!/bin/bash
+# Script: copy_to_remote_host 
+# Author: Walied Arulandu
+# Date Created: Sun Jan  2 09:35:39 2022 
+# Description: This script will copy files to specified remote hosts.
+# Date Modified: Sun Jan  2 09:35:39 2022 
+
+#
+
+HOSTS='hostname1 hostname2 hostname3 192.168.0.1 192.168.0.2'
+
+#HOSTS=$( cat ~/projects/trash/host_names.txt )
+
+FILES="/etc/passwd
+/etc/group
+/etc/shadow
+/etc/nsswitch.conf
+/etc/sshd_ssh_config
+/etc/fake"
+
+#FILES=$( cat ~/projects/trash/file_names.txt )
+
+for i in $HOSTS
+do
+  scp -o ConnectTimeout=2 $FILES $i:/tmp
+done
