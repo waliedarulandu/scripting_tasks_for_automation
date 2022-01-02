@@ -1,0 +1,20 @@
+#!/bin/bash
+# Script: directory_check 
+# Author: Walied Arulandu
+# Date Created: Sun Jan  2 10:13:14 2022 
+# Description: This script will find directories in home without users.
+# Date Modified: Sun Jan  2 10:13:14 2022 
+
+#
+cd /home
+
+for DIR in *
+do
+  CHK=$(grep -c /home/$DIR /etc/passwd)
+  if [ $CHK -ge 1 ]
+  then
+    echo $DIR is assigned to a user
+  else
+    echo $DIR is NOT assigned to a user
+  fi
+done
