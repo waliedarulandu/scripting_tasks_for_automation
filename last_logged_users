@@ -5,16 +5,12 @@
 # Description: This script will list users logged in by date.
 # Date Modified: Mon Jan  3 08:06:43 2022 
 
-# the date command on this system adds a leading zero for padding on the day of the month. 
-# We, therefore we use the date command to format the output.
-#
-#current_date=$( date | awk {'print $1, $3'} )
+# The date command on this system adds leading zeros for padding to the day of the month. 
+# We, therefore format the output of date to add spaces replacing the leading zeros.
 
 current_date=$( date "+%a %b %__d" )
 
-# For deugging output purposes: Cannot cannot use day of the month because it has a leading zero
-# and the last command does not use the leading zero in single diggit day of the month. 
-#
+# For deugging purposes.  
 #echo $current_date
 
 last | grep "$current_date" 
