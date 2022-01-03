@@ -1,0 +1,20 @@
+#!/bin/bash
+# Script: tail_syslog
+# Author: Walied Arulandu
+# Date Created: Mon Jan  3 21:53:38 2022 
+# Description: This script will log only defined keywords or tags.
+# Date Modified: Mon Jan  3 21:53:38 2022 
+
+#
+tail -fn0 /var/log/syslog | while read line
+do
+  echo $line | egrep -i "refused|invalid|error|fail|lost|shut|down|offline"
+  if [ $? = 0 ]
+  then
+    echo $line >> ~/projects/trash/filtered_messages
+  fi
+done
+
+# Use ( logger -t <tag> "Walied is testing" ) to log test messages to syslog.
+# tag is any of these "refused|invalid|error|fail|lost|shut|down|offline"
+
