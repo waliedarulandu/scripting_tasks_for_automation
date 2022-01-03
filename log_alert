@@ -1,0 +1,15 @@
+#!/bin/bash
+# Script: log_alert
+# Author: Walied Arulandu
+# Date Created: Mon Jan  3 23:06:15 2022
+# Description: This script will send an email to the administrator.
+# Date Modified: Mon Jan  3 23:06:15 2022 
+#
+#
+admin="walied.arulandu@gmail.com,waliedaru@outlook.com"
+
+if [ -s ~/projects/trash/filtered_messages ]
+then
+  cat ~/projects/trash/filtered_messages | sort | uniq | mail -s "syslog messages" $admin
+  mv ~/projects/trash/filtered_messages ~/projects/trash/filtered_messages_$(date "+%Y/%m/%d_%T").old
+fi
