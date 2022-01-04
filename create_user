@@ -1,0 +1,14 @@
+#!/bin/bash
+# Script: create user
+# Author: Walied Arulandu
+# Date Created: Tue Jan  4 05:43:16 2022 
+# Description: This script will create a user account.
+# Date Modified: Tue Jan  4 05:43:16 2022 
+#
+#
+echo What is the username?:
+read user_name
+echo
+
+useradd $user_name
+echo $user_name user account has been created.
