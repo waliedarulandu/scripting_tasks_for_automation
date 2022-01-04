@@ -2,14 +2,8 @@
 # Script: disable_inactive_users
 # Author: Walied Arulandu
 # Date Created: Tue Jan  4 07:39:25 2022
-# Description: This script will disable inactive users.
+# Description: This script will disable inactive users using xargs.
 # Date Modified: Tue Jan  4 07:39:25 2022 
 #
 #
-user_accounts=$(lastlog | tail -n+2 | grep 'test' | awk {'print $1'})
-
-for user_id in $user_accounts
-do
-  # Lock the accounts
-  usermod -L $user_id
-done
+lastlog | tail -n+2 | grep 'test' | awk {'print $1'} | xargs -I {} usermod -L {}
