@@ -1,0 +1,22 @@
+#!/bin/bash
+# Script: check_disk
+# Author: Walied Arulandu
+# Date Created: Tue Jan  4 21:30:23 2022 
+# Description: This script will check for disk space and compare against a specified threshold.
+# Date Modified: Tue Jan  4 21:30:23 2022 
+#
+#
+threshold=50
+
+disks_percentages=$(df -h | egrep -v "tmpfs|snap|udev" | tail -n+2 | awk {'print $5'} | cut -d'%' -f1)
+
+# For debugging purposes
+#echo $disks_percentages 
+
+for disk_percentage in $disks_percentages 
+do
+  if [ $disk_percentage -ge $threshold ]
+  then
+    echo Check the disk space it is above $threshold% on the $(df -h | grep $disk_percentage% | awk {'print $6, "filesystem, ", "located on disk ", $1, " which is at", $5'})
+  fi
+done
