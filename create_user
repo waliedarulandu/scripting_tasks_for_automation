@@ -10,6 +10,8 @@ echo What is the username?:
 read user_name
 echo
 
+# Check if user already exists.
+
 grep -q $user_name /etc/passwd
   if [ $? -eq 0 ]
   then
@@ -19,5 +21,11 @@ grep -q $user_name /etc/passwd
     exit 0
   fi
 
-useradd $user_name
+# Requesting a description for the user. 
+echo "Please provide a description for the user:"
+read description
+echo
+
+# Creating the new user.
+useradd $user_name -c "$description"
 echo $user_name user account has been created.
