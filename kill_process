@@ -1,0 +1,12 @@
+#!/bin/bash
+# Script: kill_process
+# Author: Walied Arulandu
+# Date Created: Tue Jan  4 20:55:25 2022 
+# Description: This script will find defunct or zombie processes and kill it.
+# Date Modified: Tue Jan  4 20:55:25 2022 
+#
+#
+# ps aux | grep 'defunct'
+ps axo stat,ppid,pid,comm | grep -w defunct | awk {'print $2'} | xargs -I {} kill {}
+
+echo All defunct or zombie processes are killed.
