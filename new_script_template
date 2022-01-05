@@ -1,0 +1,27 @@
+#!/bin/bash
+# Script: goscript
+# Author: Walied Arulandu
+# Date Created: Wed Jan  5 23:28:51 2022 
+# Description: This script will create a preformatted script.
+# Date Modified: Wed Jan  5 23:28:51 2022 
+#
+#
+read -r -p "Specify a new script name: " script_name
+read -r -p "Specify the full path to the scripts home: " scripts_home
+read -r -p "Type your full name and surname: " author
+read -r -p "Specify the description of this script: " description
+
+echo "#!/bin/bash" > $scripts_home/$script_name
+echo "#------------------------------------------------------------#" >> $scripts_home/$script_name
+#echo "#" >> $scripts_home/$script_name
+echo "# Script:" $script_name >> $scripts_home/$script_name 
+echo "# Author:" $author >> $scripts_home/$script_name
+echo "# Created on:" $(date) >> $scripts_home/$script_name 
+echo "# Description:" $description >> $scripts_home/$script_name
+echo "# Modified on:" $(date) >> $scripts_home/$script_name
+#echo "#" >> $scripts_home/$script_name
+echo "#------------------------------------------------------------#" >> $scripts_home/$script_name
+echo "#" >> $scripts_home/$script_name
+echo "#" >> $scripts_home/$script_name
+chmod a+x $scripts_home/$script_name
+vi $scripts_home/$script_name
