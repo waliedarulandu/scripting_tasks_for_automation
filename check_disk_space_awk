@@ -1,0 +1,23 @@
+#!/bin/bash
+# Script: check_disk_space_awk
+# Author: Walied Arulandu
+# Date Created: Wed Jan  5 08:27:11 2022 
+# Description: This script will check disk space against a threshold amount using awk.
+# Date Modified: Wed Jan  5 08:27:11 2022 
+#
+#
+global_threshold=50
+
+echo
+echo Following is the disk space capacity for disks over $global_threshold%
+echo
+
+# For debugging purposes
+#df -h | awk '0+$5 >= 50 {print}'
+#echo
+#df -h | awk '$5 >=50 {print}' | awk {'print $5, $6'}
+#echo
+
+# Needed to pass the global_threshold variable into awk by creating the local_threshold variable.
+df -h | awk -v local_threshold=$global_threshold '$5 >=local_threshold {print}' | awk {'print $5, $6'}
+echo
