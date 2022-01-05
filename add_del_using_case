@@ -1,0 +1,24 @@
+#!/bin/bash
+# Script: add_del_using_case
+# Author: Walied Arulandu
+# Date Created: Wed Jan  5 23:00:00 2022 
+# Description: This script will .
+# Date Modified: Wed Jan  5 23:00:00 2022
+#
+#
+echo
+echo Select one of the options:
+echo
+echo type a to add a record.
+echo
+echo type d to delete a record.
+echo
+read choice
+
+case $choice in
+  a) ./add_record;;
+  d) ./delete_record;;
+  *) echo Invalid choice. 
+esac
+
+echo
