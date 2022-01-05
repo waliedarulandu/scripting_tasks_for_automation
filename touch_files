@@ -1,0 +1,28 @@
+#!/bin/bash
+# Script: touch_files
+# Author: Walied Arulandu
+# Date Created: Wed Jan  5 10:33:48 2022 
+# Description: This script will create a given number of files with a given suffix.
+# Date Modified: Wed Jan  5 10:33:48 2022 
+#
+#
+file_path=~/projects/trash/
+
+echo Specify a file name:
+read file_name
+
+echo Specify a file name suffix '(e.g. txt)':
+read file_name_suffix
+
+echo Specify the number of files to create:
+read number_of_files
+
+for file_number in $(seq 1 $number_of_files)
+do
+  touch $file_path$file_name$file_number.$file_name_suffix
+done
+
+if [ $? -eq 0 ]
+then
+  echo Successfully created $number_of_files files named $file_name[1 to $number_of_files].$file_name_suffix in $file_path
+fi
