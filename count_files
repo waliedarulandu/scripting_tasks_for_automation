@@ -1,0 +1,32 @@
+#!/bin/bash
+# Script: count_files
+# Author: Walied Arulandu
+# Date Created: Wed Jan  5 11:03:39 2022 
+# Description: This script will count the number of files in a given directory.
+# Date Modified: Wed Jan  5 11:03:39 2022 
+#
+#
+echo Specify the path to the files:
+read file_path
+echo
+echo Specify the name of the files, giving the prefix excluding trailing numbers:
+read file_name_prefix
+echo
+echo Specify file threshold:
+read file_threshold
+echo
+file_count=$(ls -l $file_path/$file_name_prefix* | wc -l)
+
+# -eq, -gt, -ge are for integers and == for characters.
+if [ $file_count -ge $file_threshold ] 
+then
+  echo $file_count files were found in $file_path with the prefix \"$file_name_prefix\".
+  echo
+  echo The file count of $file_count is more than or equal to the threshold amount of $file_threshold.
+  echo
+else
+  echo $file_count files were found in $file_path with the prefix \"$file_name_prefix\".
+  echo
+  echo The file count of $file_count is less than the threshold amount of $file_threshold.
+  echo
+fi
