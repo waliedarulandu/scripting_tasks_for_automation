@@ -1,0 +1,42 @@
+#!/bin/bash
+# Script: add_record
+# Author: Walied Arulandu
+# Date Created: Wed Jan  5 21:00:44 2022
+# Description: This script will add a record to a database.
+# Date Modified: Wed Jan  5 21:00:44 2022 
+#
+#
+path_to_database=~/projects/trash/database
+echo Specify hostname:
+read host_id
+echo
+
+# Do a silent grep to determine if the hostname already exists in the database
+grep -q $host_id $path_to_database
+
+if [ $? -eq 0 ]
+then
+  echo Error -- Hostname $host_id already exists in $path_to_database
+  echo
+  exit 0
+fi
+
+echo Specify the IP address:
+read ip_addr
+echo
+grep -q $ip_addr $path_to_database
+
+if [ $? -eq 0 ]
+then
+  echo Error -- IP $ip_addr already exists in $path_to_database
+  echo
+  exit 0
+fi
+
+echo Specify description:
+read description
+echo
+
+echo $host_id $ip_addr $description >> $path_to_database
+echo The specified record has been added to $path_to_database
+echo
