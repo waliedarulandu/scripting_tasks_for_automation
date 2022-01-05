@@ -1,0 +1,28 @@
+#!/bin/bash
+# Script: delete_record
+# Author: Walied Arulandu
+# Date Created: Wed Jan  5 21:39:36 2022
+# Description: This script will delete a specified record from a flat file database.
+# Date Modified: Wed Jan  5 21:39:36 2022 
+#
+#
+path_to_database=~/projects/trash/database
+
+echo Specify the hostname or IP address to delete:
+read input
+echo
+
+grep -q $input $path_to_database
+
+if [ $? -eq 0 ]
+then
+  echo
+  # Search and replace example.
+  # sed -i 's/'$input'/old' $path_to_database
+  # find and delete.
+  sed -i '/'$input'/d' $path_to_database
+  echo The record containing $input has been deleted from $path_to_database.
+else
+  echo There is no record containing $input it does not exist in $path_to_database.
+fi
+echo
