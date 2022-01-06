@@ -1,0 +1,52 @@
+#!/bin/bash
+#------------------------------------------------------------#
+# Script: sedding
+# Author: Walied Arulandu
+# Created on: Thu 06 Jan 2022 21:20:04 SAST
+# Description: This script will apply sed actions on text.
+# Modified on: Thu 06 Jan 2022 21:20:04 SAST
+#------------------------------------------------------------#
+#
+#
+#echo Specify the path and name of the txt:
+#read path_to_txt
+path_to_txt=~/projects/trash/characters.txt
+
+echo
+echo Chose one of the options below:
+echo
+echo 'a = Global replace a string with a newstring'
+echo 'aa = Global replace a string with a blank'
+echo 'b = Find a string and delete a line'
+echo 'c = Remove empty lines'
+echo "d = Remove the first or n'th line"
+echo "dd = Remove a range of lines"
+echo 'e = Replace tabs with spaces'
+echo 'ee = Replace spaces with tabs'
+echo 'f = Show a defined range of lines '
+echo 'g = Do not show a defined range of lines'
+echo 'h = Add empty lines'
+echo "i = Global search and replace but skip the n'th numbered line"
+
+read choices
+
+echo
+
+case $choices in
+  a) sed 's/Kenny/Lionel/g' $path_to_txt;;
+  aa) sed 's/Costanza//g' $path_to_txt;; 
+  b) sed '/Seinfeld/d' $path_to_txt;;
+  c) sed '/^$/d' $path_to_txt;;
+  d) sed '1d' $path_to_txt;;
+  dd) sed '1,3d' $path_to_txt;;
+  e) sed 's/\t/ /g' $path_to_txt;;
+  ee) sed 's/ /\t/g' $path_to_txt;;
+  f) sed -n 12,18p $path_to_txt;;
+  g) sed 12,18d $path_to_txt;;
+  h) sed G $path_to_txt;;
+  i) sed '8!s/Seinfeld/S/g' $path_to_txt;;
+  *) Invalid choice
+esac
+
+echo
+
