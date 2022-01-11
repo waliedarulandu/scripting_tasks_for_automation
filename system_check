@@ -1,0 +1,88 @@
+#!/bin/bash
+#------------------------------------------------------------#
+# Script: system_check
+# Author: Walied Arulandu
+# Created on: Mon 10 Jan 2022 16:35:02 SAST
+# Description: This script will perform various health and performance checks.
+# Modified on: Mon 10 Jan 2022 16:35:02 SAST
+#------------------------------------------------------------#
+#
+#
+echo
+echo You are running the $0 script on host $(hostname)
+echo
+echo Select one of the options.To run a command enter a number:
+echo
+echo 1. check disk capacity on $(hostname).
+echo 1a. display the device utilization report for disks..
+echo 1b. report disk statistics.
+echo 1c. report summary statistics about disk activity.
+echo 1d. iotop displays I/O bandwidth read and written by each process/thread, the percentage of time the thread/process spent swapping in and waiting on I/O. 
+echo 2. check for large files. 
+echo 3. check system processes with Top.
+echo 3a. report memory map of a process
+echo 3b. htop - interactive process viewer
+echo 4. check available memory.
+echo 5. list the ranges of available memory with their online status.
+echo 6. display /proc/meminfo.
+echo 7. check virtual memory and swap space.
+echo 8. check virtual memory event counter statistics.
+echo 9. description of the system\'s hardware components. 
+echo 10. display CPU architecture. 
+echo 11. display /proc/cpuinfo. 
+echo 12. display the CPU utilization report.
+echo 13. run tcpdump on a specified interface.
+echo 14. list open files by processes.
+echo 15. run netstat -plunt, a deprecated utility to investgate sockets.
+echo 16. run ss -plunta'(Z)', another utility to investigate sockets.
+echo 17. run iftop, it listens to network traffic and displays bandwidth usage on a named interface.
+echo 18. run iptraf, an ncurses-based IP LAN monitor that generates various network statistics.
+echo 19. print statistics of user logins\/logouts \(connect time\) in hours.
+echo 20. print information about previously executed commands.
+echo 21. summarizes accounting information about previously executed commands.
+echo
+read choice
+echo
+case $choice in
+  1) ./check_disk_while_loop;;
+  1a) iostat -dhy 2 3;;
+  1b) vmstat -dwt;;
+  1c) vmstat -D;;
+  1d) sudo iotop -d 3 -o -n 5;;
+  2) echo Specify the full path to check:
+     read path_to_files
+     sudo du -sk $path_to_files/* | sort -nr | less;;
+  3) top;;
+  3a) echo Specify process_id:
+      read process_id
+      pmap -xp $process_id | less;;
+  3b) htop;;
+  4) free -wth;;
+  5) lsmem;;
+  6) less /proc/meminfo;;
+  7) vmstat -wt -S m;;
+  8) vmstat -s;;
+  9) sudo dmidecode | less;;
+  10) lscpu;;
+  11) cat /proc/cpuinfo | less;;
+  12) iostat -chy 2 3;;
+  13) echo Specify the network interface name:
+      read network_interface
+      sudo tcpdump -vi $network_interface;;
+  14) echo Specify a value to grep for using lsof '(e.g. listen)':
+      read grep_value
+      sudo lsof -i -P -n | grep -i $grep_value;;
+  15) netstat -plunt;;
+  16) ss -plunta;;
+  17) echo Specify network interface name:
+      read network_interface_name
+      sudo iftop -B -i $network_interface_name;; 
+  18) sudo iptraf-ng;;
+  19) ac -payd | less;;
+  20) sudo lastcomm | less;;# sudo lastcomm --command su
+  21) sa -racu |less;;
+  *) echo Invalid choice.
+esac
+
+echo
+
