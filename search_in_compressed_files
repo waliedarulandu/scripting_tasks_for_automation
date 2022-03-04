@@ -30,7 +30,7 @@ for file_name in $Path_to_product/$Folder_name/*.gz
 do
   for file in $File_list
   do
-    tar -tvzf $file_name | grep $file
+    tar -tvzf $file_name | grep -i $file
   done
   ((++Comppressed_file_count))
 done
