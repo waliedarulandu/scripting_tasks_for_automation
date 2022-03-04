@@ -25,6 +25,11 @@ bynet'
 
 Compressed_file_count=0
 
+START="$(date +%s)"
+
+echo $(date)
+echo 
+echo Searching through the compressed files in $Path_to_product/$Folder_name
 echo
 for file_name in $Path_to_product/$Folder_name/*.gz
 do
@@ -35,4 +40,5 @@ do
   ((++Comppressed_file_count))
 done
 
-echo Searched through $Comppressed_file_count compressed files 
+Duration=$[ $(date +%s) - ${START} ]
+echo Searched through $Comppressed_file_count compressed files in a duration of $Duration seconds
