@@ -1,0 +1,57 @@
+#!/bin/bash
+#---------------------------------------------------------------------------------------#
+# Script: 104.1.13_search_in_certlist
+# Author: Walied Arulandu
+# Created on: Tue 08 Mar 2022 06:48:37 SAST
+# Description: From a given list determine if those packages are in the certlist.
+# Modified on: Tue 08 Mar 2022 06:48:37 SAST
+#--------------------------------------------------------------------------------------#
+#
+#
+Path_to_product='/var/opt/teradata/packages/patches'
+
+Folder_name='Certlist_VP_SLES12'
+
+File_list='teradata-osutils 
+teradata-dynaswap
+cpupower
+teradata-ntp
+ntp
+teradata-system-change-tools
+teradata-serviceconnect
+sm3gnode
+teradata-tvia
+SMmonitor
+bynet 
+mstflint
+infiniband-diags
+libibmad
+libibumad
+opensm
+opensm-libs
+dell-megaraid_sas 
+OM-SrvAdmin
+SuSEfirewall2
+xorg-x11-Xvnc'
+
+
+Compressed_file_count=0
+
+START="$(date +%s)"
+
+echo $(date)
+echo 
+echo Searching through the compressed files in $Path_to_product/$Folder_name
+echo
+for file_name in $Path_to_product/$Folder_name/*.gz
+do
+  for file in $File_list
+  do
+    tar -tvzf $file_name | grep -i $file
+  done
+  ((++Comppressed_file_count))
+done
+
+Duration=$[ $(date +%s) - ${START} ]
+echo
+echo Searched through $Comppressed_file_count compressed files in a duration of $Duration seconds
