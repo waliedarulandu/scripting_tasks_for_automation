@@ -41,4 +41,5 @@ do
 done
 
 Duration=$[ $(date +%s) - ${START} ]
+echo
 echo Searched through $Comppressed_file_count compressed files in a duration of $Duration seconds
