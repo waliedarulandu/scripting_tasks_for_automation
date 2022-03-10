@@ -1,0 +1,44 @@
+#!/bin/bash
+#---------------------------------------------------------------------------------------#
+# Script: ibinfo_llr_err_stat
+# Author: Walied Arulandu
+# Created on: Thu 10 Mar 2022 21:02:35 SAST
+# Description: Run ibinfo to collect error stats every 5 minutes for 1 hour.
+# Modified on: Thu 10 Mar 2022 21:02:35 SAST
+#--------------------------------------------------------------------------------------#
+#
+#
+Interval=1
+Max_iterations=12
+Iteration=0
+
+Log_path=/var/opt/teradata/packages/patches/
+Log_name=ibinfo_llr_err_stat_$(date +%Y_%m_%d_%H%M%S).txt
+
+Start_time=$(date +%s)
+
+echo Starting on $(date) > $Log_path$Log_name
+echo >> $Log_path$Log_name
+
+echo $(date)
+echo
+echo Collecting \"allhosts\" and \"allswitches\" error stats with ibinfo.
+
+while [ $Iteration -le $Max_iterations ] 
+do
+  ((Iteration++))
+  echo Iteration $Iteration at $(date +%T) >> $Log_path$Log_name
+  /opt/teradata/bynet/bin/ibinfo -C mlx5_0 -P 1 -d llr_err_stat allhosts >> $Log_path$Log_name
+  /opt/teradata/bynet/bin/ibinfo -C mlx5_0 -P 1 -d llr_err_stat allswitches >> $Log_path$Log_name
+  echo >> $Log_path$Log_name
+  echo >> $Log_path$Log_name
+  echo >> $Log_path$Log_name
+  echo
+  echo We\'ve collected $Iteration thus far.
+  sleep $Interval
+done
+
+echo
+Duration=$[ $(date +%s) - ${Start_time} ]
+echo We\'ve collected $Max_iterations iterations of error stats with ibinfo in a duration of $Duration seconds.
+echo Error stats collection completed in $Duration seconds. >> $Log_path$Log_name
