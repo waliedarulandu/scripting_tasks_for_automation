@@ -8,7 +8,7 @@
 #--------------------------------------------------------------------------------------#
 #
 #
-Interval=1
+Interval=300
 Max_iterations=12
 Iteration=0
 
@@ -29,10 +29,10 @@ do
   ((Iteration++))
   echo Iteration $Iteration at $(date +%T) >> $Log_path$Log_name
   echo ibinfo err stats for allhosts >> $Log_path$Log_name
-  #/opt/teradata/bynet/bin/ibinfo -C mlx5_0 -P 1 -d llr_err_stat allhosts >> $Log_path$Log_name
+  /opt/teradata/bynet/bin/ibinfo -C mlx5_0 -P 1 -d llr_err_stat allhosts >> $Log_path$Log_name
   echo >> $Log_path$Log_name
   echo ibinfo err stats for allswitches >> $Log_path$Log_name 
-  #/opt/teradata/bynet/bin/ibinfo -C mlx5_0 -P 1 -d llr_err_stat allswitches >> $Log_path$Log_name
+  /opt/teradata/bynet/bin/ibinfo -C mlx5_0 -P 1 -d llr_err_stat allswitches >> $Log_path$Log_name
   echo >> $Log_path$Log_name
   echo >> $Log_path$Log_name
   echo >> $Log_path$Log_name
