@@ -1,0 +1,106 @@
+#!/bin/bash
+#---------------------------------------------------------------------------------------#
+# Script: conv_damc_health_logs_to_csv
+# Author: Walied Arulandu
+# Created on: Sun 24 Apr 2022 01:11:14 SAST
+# Description: Convert damc health logs to CSV for grafana csv datasource.
+# Modified on: Sun 24 Apr 2022 01:11:14 SAST
+#--------------------------------------------------------------------------------------#
+#
+#
+
+job_start_date=$(date +%s)
+
+path_to_archived_logs=/usr/share/grafana/logs/shared/damc_archived_logs
+path_to_uncompressed_logs=/usr/share/grafana/logs/shared/damc_uncompressed_logs
+path_to_csv_logs=/usr/share/grafana/logs/shared/damc_csv_logs
+
+echo -e "\nJob $job_start_date is starting now...\n"
+
+# Starting uncompressing job here...
+
+echo -e "\nUncompressing archived logs now...\n"
+
+for file_name in $( ls $path_to_archived_logs )
+do 
+  if [ -f $path_to_archived_logs/$file_name ]
+  then
+    tar -xjf $path_to_archived_logs/$file_name -C $path_to_uncompressed_logs
+  fi
+done
+
+# Starting normalizing job here...
+
+echo -e "\nNormalizing log files now...\n"
+
+for file_name in $( ls $path_to_uncompressed_logs/*.log )
+do
+   cat -etv $file_name | tr -d '^M$H' | sed 's/Press any key to continue (Q to quit)                                                                                //g' | sed 's/Press any key to continue (Q to quit)//g' > $file_name.temp
+done
+
+#Starting csv job here...
+
+echo -e "\nCreating output csv now...\n"
+
+for file_name in $( ls $path_to_uncompressed_logs/*.tmp )
+do
+  date=$( echo "$file_name" | awk -F "-" {'print $4'} | awk -F "_" {'print $1'} )
+  time=$( echo "$file_name" | awk -F "_" {'print $5'} | awk -F "." {'print $1'} )
+  node=$( grep "System Name:" $file_name | awk -F "\r" {'print $1'} | awk -F " " {'print $3'} ) 
+  ip=$( echo "$file_name" | awk -F "-" {'print $2'} )
+ 
+  sleep 2
+ 
+  counter=0 
+ 
+  while IFS=' ' read -r line
+  do
+    # echo $line >> $path_to_csv_logs/$ip-$node-sensor_status.csv
+    # The line variable in quotes adds whitespaces and is not ideal
+    # echo "$line"
+    
+    line_array=($line)
+
+    # Variable value plus index number is displayed. 
+    # echo $line_array[0]
+    # Only variable value is displayed.
+    # echo ${line_array[0]}
+    # sleep 1
+
+    if [[ "${line_array[0]}" != "-"* ]] || [[ "${line_array[0]}" == "spawn"* ]] || [[ "${line_array[0]}" != "Password"* ]] || [[ "${line_array[0]}" != "D4544"* ]] || [[ "${line_array[0]}" != "System"* ]] || [[ "${line_array[0]}" != "Version"* ]] || [[ "${line_array[0]}" != *"sensor-status"* ]]
+    then
+      ((counter++))
+      echo $date $time $node $ip $counter enclosure drawer ${line_array[0]} ${line_array[1]} ${line_array[2]} ${line_array[3]} ${line_array[4]} ${line_array[5]} ${line_array[6]} ${line_array[7]} #>> $path_to_csv_logs/$ip-$node-sensor_status.tmp
+    fi
+    
+    # Looping through array indices... 
+    #for column in ${line_array[@]};
+    #do
+    #  #echo -e value $i, the indice $line_array[$i] 
+    #  for column in ${!line_array[@]}
+    #  do
+    #     echo {allThreads[$column]}
+    #  done
+    #  sleep 1
+    #done
+
+  done < $file_name
+done
+
+#for file_name in $( ls $path_to_csv_logs )
+#do
+#  while read -r line
+#  do
+#    echo $line
+#    #sleep 1
+#  done < $path_to_csv_logs$file_name
+#done
+
+#Starting cleaning up job here...
+
+echo -e "Removing compressed archives from \n"
+
+echo -e "Removing normalized log files from \n"
+
+echo -e "Job $job_start_date has ended and ran for a duration of $[ $(date +%s) - ${job_start_date} ] seconds\n"
+echo
