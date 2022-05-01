@@ -67,7 +67,7 @@ do
     # echo ${line_array[0]}
     # sleep 1
 
-    if [[ "${line_array[0]}" != "-"* ]] || [[ "${line_array[0]}" == "spawn"* ]] || [[ "${line_array[0]}" != "Password"* ]] || [[ "${line_array[0]}" != "D4544"* ]] || [[ "${line_array[0]}" != "System"* ]] || [[ "${line_array[0]}" != "Version"* ]] || [[ "${line_array[0]}" != *"sensor-status"* ]]
+    if [[ "${line_array[0]}" != "-"* ]]
     then
       ((counter++))
       echo $date $time $node $ip $counter enclosure drawer ${line_array[0]} ${line_array[1]} ${line_array[2]} ${line_array[3]} ${line_array[4]} ${line_array[5]} ${line_array[6]} ${line_array[7]} #>> $path_to_csv_logs/$ip-$node-sensor_status.tmp
