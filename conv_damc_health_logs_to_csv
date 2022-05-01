@@ -35,7 +35,7 @@ echo -e "\nNormalizing log files now...\n"
 
 for file_name in $( ls $path_to_uncompressed_logs/*.log )
 do
-   cat -etv $file_name | tr -d '^M$H' | sed 's/Press any key to continue (Q to quit)                                                                                //g' | sed 's/Press any key to continue (Q to quit)//g' > $file_name.temp
+   cat -etv $file_name | tr -d '^M$H' | sed '/^$\|spawn\|Password\|D4544\|System\|Version\|#\|Encl\|Drawer/d' | sed '/Press any key to continue (Q to quit)                                                                                /d' | sed '/Press any key to continue (Q to quit)/d' > $file_name.tmp
 done
 
 #Starting csv job here...
@@ -49,16 +49,17 @@ do
   node=$( grep "System Name:" $file_name | awk -F "\r" {'print $1'} | awk -F " " {'print $3'} ) 
   ip=$( echo "$file_name" | awk -F "-" {'print $2'} )
  
+  echo $node 
   sleep 2
  
   counter=0 
  
   while IFS=' ' read -r line
   do
-    # echo $line >> $path_to_csv_logs/$ip-$node-sensor_status.csv
     # The line variable in quotes adds whitespaces and is not ideal
     # echo "$line"
     
+    enclosure="n/a"
     line_array=($line)
 
     # Variable value plus index number is displayed. 
@@ -70,9 +71,44 @@ do
     if [[ "${line_array[0]}" != "-"* ]]
     then
       ((counter++))
-      echo $date $time $node $ip $counter enclosure drawer ${line_array[0]} ${line_array[1]} ${line_array[2]} ${line_array[3]} ${line_array[4]} ${line_array[5]} ${line_array[6]} ${line_array[7]} #>> $path_to_csv_logs/$ip-$node-sensor_status.tmp
+
+      case ${line_array[1]} in
+        "ost")
+           line_array_one=H${line_array[1]};;
+        "emory")
+           line_array_one=M${line_array[1]};;
+        *)
+          line_array_one=${line_array[1]};;
+      esac
+  
+      if (( counter <= 47 ))
+      then
+        enclosure="enclosure 0 drawer n/a"
+      elif (( counter >= 48 && counter <= 55 ))
+      then
+        enclosure="enclosure 0 drawer 0" 
+      elif (( counter >= 56 && counter <= 63 ))
+      then
+        enclosure="enclosure 0 drawer 1"
+      elif (( counter >= 64 && counter <= 70 ))
+      then
+        enclosure="enclosure 0 drawer 2"
+      elif (( counter >= 71 && counter <= 90 ))
+      then
+        enclosure="enclosure 0 drawer n/a"
+      elif (( counter >= 91 && counter <= 98 ))
+      then
+        enclosure="enclosure 1 drawer 0"
+      elif (( counter >= 99 && counter <= 105 ))
+      then
+        enclosure="enclosure 1 drawer 1"
+      fi
+
+      echo $date,$time,$node,$ip,$counter,$enclosure, $line_array_one ${line_array[2]} ${line_array[3]} ${line_array[4]} ${line_array[5]},${line_array[6]},${line_array[7]} #>> $path_to_csv_logs/$ip-$node-sensor_status.tmp
     fi
-    
+   
+      #echo $date $time $node $ip $counter $enclosure ${line_array[0]} $line_array_one ${line_array[2]} ${line_array[3]} ${line_array[4]} ${line_array[5]} ${line_array[6]} ${line_array[7]} #>> $path_to_csv_logs/$ip-$node-sensor_status.tmp
+
     # Looping through array indices... 
     #for column in ${line_array[@]};
     #do
