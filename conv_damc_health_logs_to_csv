@@ -35,7 +35,7 @@ echo -e "\nNormalizing log files now...\n"
 
 for file_name in $( ls $path_to_uncompressed_logs/*.log )
 do
-   cat -etv $file_name | tr -d '^M$H' | sed '/^$\|spawn\|Password\|D4544\|System\|Version\|#\|Encl\|Drawer/d' | sed '/Press any key to continue (Q to quit)                                                                                /d' | sed '/Press any key to continue (Q to quit)/d' > $file_name.tmp
+  cat -etv $file_name | tr -d '^M$H' | sed '/^$\|spawn\|Password\|D4544\|System\|Version\|#\|Encl\|Drawer/d' | sed '/Press any key to continue (Q to quit)                                                                                /d' | sed '/Press any key to continue (Q to quit)/d' > $file_name.tmp
 done
 #
 #Starting csv job here...
@@ -52,9 +52,9 @@ do
   counter=0
 
   case $ip in
-     39.80.8.3) 
-         node=DAMC001-3;;
-     39.80.8.7)
+    39.80.8.3) 
+      node=DAMC001-3;;
+    39.80.8.7)
          node=DAMC001-7;;
      39.80.8.11) 
          node=DAMC001-11;;
