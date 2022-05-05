@@ -1,0 +1,206 @@
+#!/bin/bash
+#---------------------------------------------------------------------------------------#
+# Script: reduce_damc_health_logs_to_csv
+# Author: Walied Arulandu
+# Created on: Wed 04 May 2022 12:15:51 SAST
+# Description: Reduce data of the damc health logs and convert to csv type format using the pipe character.
+# Modified on: Wed 04 May 2022 12:15:51 SAST
+#--------------------------------------------------------------------------------------#
+#
+#
+#
+
+job_start_date=$(date +%s)
+
+path_to_archived_logs=/usr/share/grafana/logs/shared/damc_archived_logs
+path_to_uncompressed_logs=/usr/share/grafana/logs/shared/damc_uncompressed_logs
+path_to_csv_logs=/usr/share/grafana/logs/shared/damc_csv_logs
+
+echo -e "\nJob $job_start_date is starting now...\n"
+
+# Starting uncompressing job here...
+
+echo -e "\nUncompressing archived logs now...\n"
+
+#for file_name in $( ls $path_to_archived_logs )
+#do 
+#  if [ -f $path_to_archived_logs/$file_name ]
+#  then
+#    tar -xjf $path_to_archived_logs/$file_name -C $path_to_uncompressed_logs
+#  fi
+#done
+#
+# Starting normalizing job here...
+#
+echo -e "\nNormalizing log files now...\n"
+
+for file_name in $( ls $path_to_uncompressed_logs/*.log )
+do
+  cat -etv $file_name | sed 's/\^M\$//'g| sed '/^$\|spawn\|Password\|D4544\|System\|Version\|#\|Encl\|Drawer/d' | sed '/Press any key to continue (Q to quit)                                                                                /d' | sed '/Press any key to continue (Q to quit)/d' | sed 's/./&|/1;s/./&|/7;s/./&|/40' #| sed 's/^(.{3,8})     /\1456/' # > $file_name.tmp
+  sleep 1
+done
+#
+#Starting csv job here...
+#
+echo -e "\nCreating csv output files now...\n"
+
+for file_name in $( ls $path_to_uncompressed_logs/*.tmp )
+do
+  # The file_name variable above is populated with the absolute pathi to the file plus the files name.
+  # e.g. /usr/share/grafana/logs/shared/damc_uncompressed_logs/damc-39.80.16.11-health_status-20220424_230001.log.tmp.
+  # we will break it down for the date time and ip address details.
+
+  date=$( echo "$file_name" | awk -F "-" {'print $4'} | awk -F "_" {'print $1'} )
+  time=$( echo "$file_name" | awk -F "_" {'print $5'} | awk -F "." {'print $1'} )
+  ip=$( echo "$file_name" | awk -F "-" {'print $2'} )
+
+  counter=0
+  
+  # Setting the host name using a case statement is straightforward and easy.
+  case $ip in
+    39.80.8.3) 
+      node=DAMC001-3;;
+    39.80.8.7)
+      node=DAMC001-7;;
+    39.80.8.11) 
+      node=DAMC001-11;;
+    39.80.8.19)
+      node=DAMC001-19;;
+    39.80.8.23)  
+      node=DAMC001-23;;
+    39.80.16.7)
+      node=DAMC002-7;;
+    39.80.16.11)
+      node=DAMC002-11;;
+    39.80.16.19)
+      node=DAMC002-19;;
+    39.80.24.3)
+      node=DAMC003-3;;
+    39.80.24.7)
+      node=DAMC003-7;;
+    39.80.24.11)
+      node=DAMC003-11;;
+  esac
+ 
+  while IFS=' ' read -r line
+  do
+    # The line variable in quotes adds whitespaces and is not ideal
+    #echo -e "\n\n$line"
+    enclosure=""
+    normalize_columns=""
+    line_array=("$line")
+     
+    #echo $line[@]
+    #echo Sline_array[@]
+
+    # Variable value plus index number is displayed. 
+    # echo $line_array[0]
+    # Only variable value is displayed.
+    # echo ${line_array[0]}
+
+    if [[ "${line_array[0]}" != "-"* ]] 
+    then
+      ((counter++))
+
+      case ${line_array[1]} in
+        "ost")
+          line_array_one=H${line_array[1]};;
+        "emory")
+          line_array_one=M${line_array[1]};;
+        *)
+          line_array_one=${line_array[1]};;
+      esac
+  
+      if (( counter <= 47 ))
+      then
+        enclosure="enclosure 0 drawer -"
+      elif (( counter >= 48 && counter <= 55 ))
+      then
+        enclosure="enclosure 0 drawer 0" 
+      elif (( counter >= 56 && counter <= 63 ))
+      then
+        enclosure="enclosure 0 drawer 1"
+      elif (( counter >= 64 && counter <= 70 ))
+      then
+        enclosure="enclosure 0 drawer 2"
+      elif (( counter >= 71 && counter <= 90 ))
+      then
+        enclosure="enclosure 1 drawer -"
+      elif (( counter >= 91 && counter <= 98 ))
+      then
+        enclosure="enclosure 1 drawer 0"
+      elif (( counter >= 99 && counter <= 105 ))
+      then
+        enclosure="enclosure 1 drawer 1"
+      fi
+
+      # echo $date $time,$ip,$enclosure,$node,$line_array_one ${line_array[2]} ${line_array[3]},
+      # sleep 1
+      # echo Column 3, ${line_array[3]}
+      #echo Column 4, ${line_array[4]}
+      # echo ${line_array[5]}
+      # echo ${line_array[6]}
+      # echo ${line_array[7]}
+      sleep 1
+
+      # Let's build a complete description 
+      if [[ ${line_array[4]} =~ [^[:digit:]] ]]
+      then
+        #echo Has some nondigits, ${line_array[4]}
+        if [[ -z ${line_array[6]} ]]
+        then
+          normalize_columns="$line_array_one ${line_array[2]} ${line_array[3]} ${line_array[4]},${line_array[5]},-,-"
+        elif [[ -z ${line_array[7]} ]]
+        then
+          normalize_columns="$line_array_one ${line_array[2]} ${line_array[3]} ${line_array[4]},${line_array[5]},Volts,${line_array[6]}"
+        else
+          normalize_columns="$line_array_one ${line_array[2]} ${line_array[3]} ${line_array[4]},${line_array[5]},${line_array[6]},${line_array[7]}"
+        fi
+      else
+        #echo all digits, ${line_array[4]}
+        normalize_columns="$line_array_one ${line_array[2]} ${line_array[3]},${line_array[4]},${line_array[5]},${line_array[6]}"
+      fi
+
+      #### Counter  Date  Time  IP  Enclosure  Node |-Complete Description-|  Value/Drawer      Labels          Status                           
+      # not showing line_array[0] relates to enclosure or drawer id
+      #echo $counter,$date $time,$ip,$node,$enclosure,$normalize_columns #>> $path_to_csv_logs/$ip-$node-sensor_status.csv
+      sleep 1
+
+      # Print array
+      #echo "${line[@]}"
+
+      for column in "${line[@]}"
+      do
+        echo -e "\n\n$column\n\n"
+      done
+
+      # Looping through array indices...
+      #for column in ${line_array[@]};
+      #do
+      #  echo -e value $column, the indice $line_array[$column]
+      #done
+
+      #for column in ${line_array[@]}
+      #do
+      #  echo {[$column]}
+      #done
+      #sleep 1
+
+    fi
+   
+  done < $file_name
+done
+
+#
+#Cleaning up job starting here...
+#
+echo -e "\nRemoving compressed archives from $path_to_archived_logs\n"
+#rm -r $path_to_archived_logs/*.bz2
+echo -e "\nRemoving uncompressed log files from $path_to_uncompressed_logs\n"
+#rm -r $path_to_uncompressed_logs/*.log
+echo -e "\nRemoving normalized log files from $path_to_uncompressed_logs\n"
+#rm -r $path_to_uncompressed_logs/*.tmp
+
+echo -e "Job $job_start_date has ended and ran for a duration of $[ $(date +%s) - ${job_start_date} ] seconds\n"
+
+echo
