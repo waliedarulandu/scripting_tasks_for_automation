@@ -18,7 +18,9 @@ path_to_csv_logs=/usr/share/grafana/logs/shared/damc_csv_logs
 
 echo -e "\nJob $job_start_date is starting now...\n"
 
+#
 # Starting uncompressing job here...
+#
 
 echo -e "\nUncompressing archived logs now...\n"
 
@@ -26,42 +28,139 @@ echo -e "\nUncompressing archived logs now...\n"
 #do 
 #  if [ -f $path_to_archived_logs/$file_name ]
 #  then
-#    tar -xjf $path_to_archived_logs/$file_name -C $path_to_uncompressed_logs
+#   #tar -xjf $path_to_archived_logs/$file_name -C $path_to_uncompressed_logs
 #  fi
 #done
+
 #
 # Starting normalizing job here...
 #
+
 echo -e "\nNormalizing log files now...\n"
+
+# For troubleshooting below code
+#counter=0
 
 for file_name in $( ls $path_to_uncompressed_logs/*.log )
 do
-  cat -etv $file_name | sed '/^$\|spawn\|Password\|DH4544\|System\|Version\|#\|Encl\|Drawer\|Overall Unit Status\|Press any key to continue (Q to quit)\|--------/d'| sed 's/\^\^M$//g;s/\^M\$//g;s/ C //g;s/%//g;s/ OK //g;s/ Not Installed //g;s/On-board SAS2008 Temperature-Ctlr A/On-board SAS2008 Temp-Ctlr A       /g;s/On-board SAS2008 Temperature-Ctlr B/On-board SAS2008 Temp-Ctlr B       /g;s/IOC Temperature-Ctlr A/IOC Temp-Ctlr A/g;s/IOC Temperature-Ctlr B/IOC Temp-Ctlr B/g;s/\b\s\b/_/g;s/./&|/1;s/./&|/40;s/[[:space:]]//g' #> $file_name.tmp
+ cat -etv $file_name | sed '/^$\|spawn\|Password\|DH4544\|System\|Version\|#\|Encl\|Drawer\|Overall Unit Status\|Press any key to continue (Q to quit)\|--------/d'| sed 's/\^\^M$//g;s/\^M\$//g;s/ C //g;s/%//g;s/ OK //g;s/ Not Installed //g;s/On-board SAS2008 Temperature-Ctlr A/On-board SAS2008 Temp-Ctlr A       /g;s/On-board SAS2008 Temperature-Ctlr B/On-board SAS2008 Temp-Ctlr B       /g;s/IOC Temperature-Ctlr A/IOC Temp-Ctlr A/g;s/IOC Temperature-Ctlr B/IOC Temp-Ctlr B/g;s/\b\s\b/_/g;s/./&|/1;s/./&|/40;s/[[:space:]]//g'| sed '1d' > $file_name.tmp
 
-  ((counter++)) 
+   # For troubleshooting above code providing one iteration on screen and break out
+   #if [ counter > 2 ]
+   #then 
+   #  break
+   #fi
+   #((counter++))
 
-  if [ $counter > 2 ]
-  then
-    break
-  fi
 done
-#
-#Starting csv job here...
-#
-echo -e "\nCreating csv output files now...\n"
 
-#for file_name in $( ls $path_to_uncompressed_logs/*.tmp )
-#do
-#  while IFS=' ' read -r line
-#  do
-    #line_array=($line)
-    #echo ${line_array[2]}
-#  done < $file_name
-#done
+#
+# Starting csv job here...
+#
+
+for file_name in $( ls $path_to_uncompressed_logs/*.tmp )
+do
+  counter=1
+  date=$( echo "$file_name" | awk -F "-" {'print $4'} | awk -F "_" {'print $1'} | sed 's/./&\//4;s/./&\//7' )
+  time=$( echo "$file_name" | awk -F "_" {'print $5'} | awk -F "." {'print $1'} | sed 's/./&:/2;s/./&:/5')
+  ip=$( echo "$file_name" | awk -F "-" {'print $2'} )
+
+  # Turn on or off printing of sensor information.
+  # Set to 0 for printing specific temperature sensors. 
+  # Set to 1 for printing of all sensors.
+  # Set to 2 for printing all temperature sensors. 
+  #
+  print_all_sensors=0
+
+  # Mapping the ip address to host or node name derived from the file name.
+  case $ip in
+    39.80.8.3) 
+      node=DAMC001-3;;
+    39.80.8.7)
+      node=DAMC001-7;;
+    39.80.8.11) 
+      node=DAMC001-11;;
+    39.80.8.19)
+      node=DAMC001-19;;
+    39.80.8.23)  
+      node=DAMC001-23;;
+    39.80.16.7)
+      node=DAMC002-7;;
+    39.80.16.11)
+      node=DAMC002-11;;
+    39.80.16.19)
+      node=DAMC002-19;;
+    39.80.24.3)
+      node=DAMC003-3;;
+    39.80.24.7)
+      node=DAMC003-7;;
+    39.80.24.11)
+      node=DAMC003-11;;
+  esac
+  
+  # Read each line of the given file. 
+  IFS="|"
+  while read -r line
+  do
+    sensor_location=""
+    line_array=($line)
+    
+    # Seting the sensor location. 
+    if (( counter <= 46 ))
+    then
+      sensor_location="enclosure 0 drawer -"
+    elif (( counter >= 47 && counter <= 54 ))
+    then
+      sensor_location="enclosure 0 drawer 0" 
+    elif (( counter >= 55 && counter <= 62 ))
+    then
+      sensor_location="enclosure 0 drawer 1"
+    elif (( counter >= 63 && counter <= 69 ))
+    then
+      sensor_location="enclosure 0 drawer 2"
+    elif (( counter >= 70 && counter <= 88 ))
+    then
+      sensor_location="enclosure 1 drawer -"
+    elif (( counter >= 89 && counter <= 96 ))
+    then
+      sensor_location="enclosure 1 drawer 0"
+    elif (( counter >= 97 ))
+    then
+      sensor_location="enclosure 1 drawer 1"
+    fi
+
+    if (( $print_all_sensors == 0 ))
+    then 
+      if (( $counter == 1)) || (( $counter == 2 )) || (( $counter == 11 )) || (( $counter == 12 )) || (( $counter == 55 )) || (( $counter == 56 ))|| (( $counter == 97 )) || (( $counter == 98 ))
+      then
+        echo $counter,$date $time,$ip,$node,$sensor_location,${line_array[0]},${line_array[1]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-temperature_sensor_status.csv
+      fi
+    elif (( $print_all_sensors == 1 ))
+    then
+      if [[ "${line_array[1]}" =~ .*"Temp".* ]]
+      then
+        echo $counter,$date $time,$ip,$node,$sensor_location,${line_array[0]},${line_array[1]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-sensor_status.csv
+      fi
+    elif (( $print_all_sensors == 2 ))
+    then
+      echo $counter,$date $time,$ip,$node,$sensor_location,${line_array[0]},${line_array[1]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-all_temperature_sensor_status.csv
+    fi
+
+    ((counter++))
+
+  done < $file_name
+  
+  # For troubleshooting above code providing one iteration on screen and break out
+  #if (( counter > 2 ))
+  #then
+  #  break
+  #fi
+done
 
 #
 #Cleaning up job starting here...
 #
+
 echo -e "\nRemoving compressed archives from $path_to_archived_logs\n"
 #rm -r $path_to_archived_logs/*.bz2
 echo -e "\nRemoving uncompressed log files from $path_to_uncompressed_logs\n"
@@ -69,6 +168,6 @@ echo -e "\nRemoving uncompressed log files from $path_to_uncompressed_logs\n"
 echo -e "\nRemoving normalized log files from $path_to_uncompressed_logs\n"
 #rm -r $path_to_uncompressed_logs/*.tmp
 
-echo -e "Job $job_start_date has ended and ran for a duration of $[ $(date +%s) - ${job_start_date} ] seconds\n"
+echo -e "\nJob $job_start_date has ended and ran for a duration of $[ $(date +%s) - ${job_start_date} ] seconds\n"
 
 echo
