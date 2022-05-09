@@ -24,13 +24,13 @@ echo -e "\nJob $job_start_date is starting now...\n"
 
 echo -e "\nUncompressing archived logs now...\n"
 
-#for file_name in $( ls $path_to_archived_logs )
-#do 
-#  if [ -f $path_to_archived_logs/$file_name ]
-#  then
-#   #tar -xjf $path_to_archived_logs/$file_name -C $path_to_uncompressed_logs
-#  fi
-#done
+for file_name in $( ls $path_to_archived_logs )
+do 
+  if [ -f $path_to_archived_logs/$file_name ]
+  then
+    tar -xjf $path_to_archived_logs/$file_name -C $path_to_uncompressed_logs
+  fi
+done
 
 #
 # Starting normalizing job here...
@@ -43,14 +43,14 @@ echo -e "\nNormalizing log files now...\n"
 
 for file_name in $( ls $path_to_uncompressed_logs/*.log )
 do
- cat -etv $file_name | sed '/^$\|spawn\|Password\|DH4544\|System\|Version\|#\|Encl\|Drawer\|Overall Unit Status\|Press any key to continue (Q to quit)\|--------/d'| sed 's/\^\^M$//g;s/\^M\$//g;s/ C //g;s/%//g;s/ OK //g;s/ Not Installed //g;s/On-board SAS2008 Temperature-Ctlr A/On-board SAS2008 Temp-Ctlr A       /g;s/On-board SAS2008 Temperature-Ctlr B/On-board SAS2008 Temp-Ctlr B       /g;s/IOC Temperature-Ctlr A/IOC Temp-Ctlr A/g;s/IOC Temperature-Ctlr B/IOC Temp-Ctlr B/g;s/\b\s\b/_/g;s/./&|/1;s/./&|/40;s/[[:space:]]//g'| sed '1d' > $file_name.tmp
+  cat -etv $file_name | sed '/^$\|spawn\|Password\|DH4544\|System\|Version\|#\|Encl\|Drawer\|Overall Unit Status\|Press any key to continue (Q to quit)\|--------/d'| sed 's/\^\^M$//g;s/\^M\$//g;s/ C //g;s/%//g;s/ OK //g;s/ Not Installed //g;s/On-board SAS2008 Temperature-Ctlr A/On-board SAS2008 Temp-Ctlr A       /g;s/On-board SAS2008 Temperature-Ctlr B/On-board SAS2008 Temp-Ctlr B       /g;s/IOC Temperature-Ctlr A/IOC Temp-Ctlr A/g;s/IOC Temperature-Ctlr B/IOC Temp-Ctlr B/g;s/\b\s\b/_/g;s/./&|/1;s/./&|/40;s/[[:space:]]//g'| sed '1d' > $file_name.tmp
 
-   # For troubleshooting above code providing one iteration on screen and break out
-   #if [ counter > 2 ]
-   #then 
-   #  break
-   #fi
-   #((counter++))
+  # For troubleshooting above code providing one iteration on screen and break out
+  #if [ counter > 2 ]
+  #then 
+  #  break
+  #fi
+  #((counter++))
 
 done
 
@@ -65,12 +65,12 @@ do
   time=$( echo "$file_name" | awk -F "_" {'print $5'} | awk -F "." {'print $1'} | sed 's/./&:/2;s/./&:/5')
   ip=$( echo "$file_name" | awk -F "-" {'print $2'} )
 
-  # Turn on or off printing of sensor information.
-  # Set to 0 for printing specific temperature sensors. 
-  # Set to 1 for printing of all sensors.
-  # Set to 2 for printing all temperature sensors. 
+  # Turn on or off filters when printing sensor information.
+  # Set to 0 for printing all voltage and temperature sensors. 
+  # Set to 1 for printing all temperature sensors.
+  # Set to 2 for printing a select few temperature sensors. 
   #
-  print_all_sensors=0
+  print_sensor_filter=2
 
   # Mapping the ip address to host or node name derived from the file name.
   case $ip in
@@ -108,7 +108,7 @@ do
     # Seting the sensor location. 
     if (( counter <= 46 ))
     then
-      sensor_location="enclosure 0 drawer -"
+      sensor_location="enclosure 0"
     elif (( counter >= 47 && counter <= 54 ))
     then
       sensor_location="enclosure 0 drawer 0" 
@@ -120,7 +120,7 @@ do
       sensor_location="enclosure 0 drawer 2"
     elif (( counter >= 70 && counter <= 88 ))
     then
-      sensor_location="enclosure 1 drawer -"
+      sensor_location="enclosure 1"
     elif (( counter >= 89 && counter <= 96 ))
     then
       sensor_location="enclosure 1 drawer 0"
@@ -129,21 +129,26 @@ do
       sensor_location="enclosure 1 drawer 1"
     fi
 
-    if (( $print_all_sensors == 0 ))
-    then 
-      if (( $counter == 1)) || (( $counter == 2 )) || (( $counter == 11 )) || (( $counter == 12 )) || (( $counter == 55 )) || (( $counter == 56 ))|| (( $counter == 97 )) || (( $counter == 98 ))
-      then
-        echo $counter,$date $time,$ip,$node,$sensor_location,${line_array[0]},${line_array[1]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-temperature_sensor_status.csv
-      fi
-    elif (( $print_all_sensors == 1 ))
+    # Check which print filter as been selected to print sensor inforamation based on that selection.
+
+    if (( $print_sensor_filter == 0 ))
+    then
+      echo $counter,$date $time,$ip,$node,${line_array[1]} $sensor_location,${line_array[0]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-all_sensor_status.csv
+    elif (( $print_sensor_filter == 1 ))
     then
       if [[ "${line_array[1]}" =~ .*"Temp".* ]]
       then
-        echo $counter,$date $time,$ip,$node,$sensor_location,${line_array[0]},${line_array[1]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-sensor_status.csv
+        echo $counter,$date $time,$ip,$node,${line_array[1]} $sensor_location,${line_array[0]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-all_temperature_sensor_status.csv
       fi
-    elif (( $print_all_sensors == 2 ))
+    elif (( $print_sensor_filter == 2 ))
     then
-      echo $counter,$date $time,$ip,$node,$sensor_location,${line_array[0]},${line_array[1]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-all_temperature_sensor_status.csv
+      if (( $counter == 1)) || (( $counter == 2 )) || (( $counter == 11 )) || (( $counter == 12 )) || (( $counter == 55 )) || (( $counter == 56 ))|| (( $counter == 97 )) || (( $counter == 98 ))
+      then
+        if [[ "${line_array[1]}" =~ .*"Temp".* ]]
+        then
+          echo $counter,$date $time,$ip,$node,${line_array[1]} $sensor_location,${line_array[0]},${line_array[2]} >> $path_to_csv_logs/$ip-$node-select_temperature_sensor_status.csv
+        fi
+      fi
     fi
 
     ((counter++))
@@ -162,11 +167,11 @@ done
 #
 
 echo -e "\nRemoving compressed archives from $path_to_archived_logs\n"
-#rm -r $path_to_archived_logs/*.bz2
+rm -r $path_to_archived_logs/*.bz2
 echo -e "\nRemoving uncompressed log files from $path_to_uncompressed_logs\n"
-#rm -r $path_to_uncompressed_logs/*.log
+rm -r $path_to_uncompressed_logs/*.log
 echo -e "\nRemoving normalized log files from $path_to_uncompressed_logs\n"
-#rm -r $path_to_uncompressed_logs/*.tmp
+rm -r $path_to_uncompressed_logs/*.tmp
 
 echo -e "\nJob $job_start_date has ended and ran for a duration of $[ $(date +%s) - ${job_start_date} ] seconds\n"
 
